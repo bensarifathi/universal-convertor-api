@@ -44,11 +44,6 @@ services:
     depends_on:
       - db
       - kafka
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1" ]
-      interval: 10s
-      timeout: 20s
-      retries: 3
 
 volumes:
   mysql-media:
