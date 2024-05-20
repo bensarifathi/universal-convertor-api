@@ -61,7 +61,7 @@ GET /api/convertor/{taskId}
 
 ## Development
 
-- **Frameworks and Libraries**: This project is built using Spring Boot, Spring Kafka, and Lombok.
+- **Frameworks and Libraries**: This project is built using **Spring Boot**, **Spring Kafka**, and **Lombok**.
 - **Testing**: Unit tests can be found in the `src/test` directory.
 
 ## Contributing
