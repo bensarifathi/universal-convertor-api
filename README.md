@@ -2,6 +2,39 @@
 
 This project provides an API for multimedia conversion, allowing users to upload files, specify conversion formats, and retrieve converted files. It utilizes Spring Boot framework and Kafka for messaging.
 
+## Workflow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant GatewayController
+    participant Kafka
+    participant Consumer
+    participant FileStorage
+    participant ConversionService
+    participant Database
+    participant ConvertorController
+
+    Client->>+GatewayController: Upload file and specify format
+    GatewayController->>+FileStorage: Save file to local storage
+    GatewayController->>+Kafka: Send task to topic "t.file.upload" with taskId
+    Kafka->>+Consumer: Forward task to target consumer
+    Consumer->>+FileStorage: Fetch the correct file
+    Consumer->>+ConversionService: Apply conversion operation based on format
+    ConversionService->>Consumer: Conversion result (DONE or FAILED)
+    Consumer->>+Database: Update task state to DONE or FAILED
+
+    Client->>+ConvertorController: Request conversion status via /api/conversion/{taskId}
+    ConvertorController->>+Database: Fetch task status
+    Database->>ConvertorController: Return task status
+    ConvertorController-->>Client: Return conversion status and download URL if status is DONE
+
+    Client->>+GatewayController: Fetch converted file via /api/files/download/{filename}
+    GatewayController->>+FileStorage: Retrieve converted file
+    FileStorage-->>GatewayController: Return converted file
+    GatewayController-->>Client: Return converted file
+```
+
 ## Prerequisites
 
 Ensure you have the following installed:
