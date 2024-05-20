@@ -28,12 +28,6 @@ public class GatewayController {
         this.fileDownloadService = fileDownloadService;
     }
 
-    @GetMapping("{message}/")
-    public ResponseEntity<Void> publishData(@PathVariable String message) {
-        kafkaTemplate.send("t.media.conversion", message);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("upload")
     public ResponseEntity<FileUploadResponseDto> uploadFile(
             @RequestParam("file") MultipartFile file,
