@@ -2,7 +2,7 @@
 
 This project provides an API for multimedia conversion, allowing users to upload files, specify conversion formats, and retrieve converted files. It utilizes Spring Boot framework and Kafka for messaging.
 
-## Workflow
+## Media Convertor Sequence Diagram
 
 ```mermaid
 sequenceDiagram
