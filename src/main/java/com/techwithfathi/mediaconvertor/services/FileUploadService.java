@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.UUID;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
 public class FileUploadService {
@@ -33,14 +36,16 @@ public class FileUploadService {
             Files.createDirectories(uploadPath);
         }
 
+        String slugifyFilename = slugifyFilename(Objects.requireNonNull(file.getOriginalFilename()));
+
         // Save the file to the local file system
-        Path filePath = uploadPath.resolve(Objects.requireNonNull(file.getOriginalFilename()));
-        Files.copy(file.getInputStream(), filePath);
+        Path filePath = uploadPath.resolve(slugifyFilename);
+        Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
 
         // Create the file download URI
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/files/download/")
-                .path(file.getOriginalFilename())
+                .path(slugifyFilename)
                 .toUriString();
         Convertor newConvertor = new Convertor();
         newConvertor.setInputFile(fileDownloadUri);
@@ -48,5 +53,12 @@ public class FileUploadService {
         newConvertor.setStatus("PENDING");
         Convertor savedConvertor = convertorRepository.save(newConvertor);
         return savedConvertor.getId();
+    }
+
+    private String slugifyFilename(String originalName) {
+
+        return originalName
+                .replace(" ", "_")
+                .replaceAll("[^\\p{ASCII}]", "");
     }
 }

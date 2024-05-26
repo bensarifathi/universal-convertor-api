@@ -3,18 +3,21 @@ package com.techwithfathi.mediaconvertor.services;
 import com.techwithfathi.mediaconvertor.models.Convertor;
 import com.techwithfathi.mediaconvertor.repository.ConvertorRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
+@Slf4j
 @Service
 public class AudioFileConvertor {
 
@@ -47,13 +50,24 @@ public class AudioFileConvertor {
     }
 
     private int execCommand(String inputFile, String outputFile) {
-        String[] command = { "ffmpeg", "-i", inputFile, outputFile };
+        String[] command = { "ffmpeg", "-i", inputFile, outputFile, "-y" };
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         try {
             // Start the process
             Process process = processBuilder.start();
+            // Read the output of the command
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
             // Wait for the process to complete
-            return process.waitFor();
+            int exitCode = process.waitFor();
+            if (exitCode != 0)
+                System.out.println(output);
+            return exitCode;
         } catch (IOException | InterruptedException e) {
             return -1;
         }

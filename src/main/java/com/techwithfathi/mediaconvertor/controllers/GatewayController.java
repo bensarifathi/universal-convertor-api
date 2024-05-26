@@ -41,8 +41,6 @@ public class GatewayController {
             return ResponseEntity.ok(fileUploadResponseDto);
 
         } catch (IOException e) {
-            System.out.println("#".repeat(200));
-            System.out.println(format);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new FileUploadResponseDto());
         }
     }
