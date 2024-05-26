@@ -34,8 +34,6 @@ public class GatewayController {
             @RequestParam("format") String format
     ) {
         try {
-            System.out.println("#".repeat(200));
-            System.out.println(format);
             String taskId = fileUploadService.upload(file, format);
             FileUploadResponseDto fileUploadResponseDto = new FileUploadResponseDto();
             fileUploadResponseDto.setTaskId(taskId);

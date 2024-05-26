@@ -15,6 +15,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "t.media.conversion", groupId = "task-group")
     void listener(String taskId) {
+        log.info("#".repeat(70));
         log.info("new conversion task: " + taskId);
         audioFileConvertor.convert(taskId);
     }
